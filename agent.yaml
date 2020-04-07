@@ -1,0 +1,36 @@
+signalFxAccessToken: { "#from": "env:ACCESS_TOKEN" }
+ingestUrl: { "#from": "env:INGEST_URL", optional: true }
+apiUrl: { "#from": "env:API_URL", optional: true }
+
+intervalSeconds: { "#from": "env:INTERVAL_SECONDS", default: 10 }
+
+logging:
+  level: { "#from": "env:LOG_LEVEL", default: "info" }
+
+observers:
+  - type: ecs
+    labelsToDimensions: &labelMap
+      com.amazonaws.ecs.container-name: container_spec_name
+
+monitors:
+  - type: cpu
+  - type: disk-io
+  - type: net-io
+  - type: load
+  - type: memory
+  - type: collectd/protocols
+  - type: vmem
+  - type: docker-container-stats
+
+  - type: ecs-metadata
+    excludedImages:
+      - signalfx-agent
+    labelsToDimensions:
+      <<: *labelMap
+
+  - { "#from": "env:EXTRA_MONITOR_CONFIG", default: [], flatten: true }
+
+metricsToExclude:
+  - { "#from": "env:METRICS_TO_EXCLUDE", default: [], flatten: true }
+
+_: { "#from": "env:CONFIG_OVERRIDE", optional: true, flatten: true }
