@@ -12,6 +12,7 @@ observers:
     labelsToDimensions: &labelMap
       com.amazonaws.ecs.container-name: container_spec_name
 
+
 monitors:
   - type: cpu
   - type: disk-io
@@ -20,8 +21,6 @@ monitors:
   - type: memory
   - type: collectd/protocols
   - type: vmem
-  - type: docker-container-stats
-    dockerURL: tcp://localhost:5672
 
   - type: ecs-metadata
     excludedImages:
